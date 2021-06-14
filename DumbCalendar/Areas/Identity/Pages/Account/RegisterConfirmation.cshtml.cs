@@ -42,8 +42,8 @@ namespace DumbCalendar.Areas.Identity.Pages.Account
 
             Email = email;
             // Once you add a real email sender, you should remove this code that lets you confirm the account
-            DisplayConfirmAccountLink = true;
-            if (DisplayConfirmAccountLink)
+            DisplayConfirmAccountLink = false;
+            if (!DisplayConfirmAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -53,6 +53,7 @@ namespace DumbCalendar.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
+                await _sender.SendEmailAsync(email, "Confirm your email!", $"Link: {EmailConfirmationUrl}");
             }
 
             return Page();

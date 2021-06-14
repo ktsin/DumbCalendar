@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BLL;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace DumbCalendar
 {
@@ -36,14 +38,25 @@ namespace DumbCalendar
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddAuthentication()
-                    .AddGoogle(options =>
-                    {
-                        IConfigurationSection googleAuthSection =
-                            Configuration.GetSection("Authentication:Google");
+                .AddGoogle(options =>
+                {
+                    IConfigurationSection googleAuthSection =
+                        Configuration.GetSection("Authentication:Google");
 
-                        options.ClientId = googleAuthSection["ClientId"];
-                        options.ClientSecret = googleAuthSection["ClientSecret"];
-                    });
+                    options.ClientId = googleAuthSection["ClientId"];
+                    options.ClientSecret = googleAuthSection["ClientSecret"];
+                })
+                .AddYandex(options =>
+                {
+                    options.ClientId = Configuration["YandexID"];
+                    options.ClientSecret = Configuration["YandexToken"];
+                });
+            
+            services.Configure<Services.Email.MessageSenderOption>(Configuration);
+            services.AddScoped<IEmailSender, Services.Email.EmailService>();
+            
+            services.ConfigureBLL(Configuration);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

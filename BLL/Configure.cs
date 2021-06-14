@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAL;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BLL
 {
-    class Configure
+    public static class Configure
     {
+        public static IServiceCollection ConfigureBLL(this IServiceCollection services, IConfiguration config)
+        {
+            services.ConfigureDAL(config);
+            return services;
+        }
     }
 }
