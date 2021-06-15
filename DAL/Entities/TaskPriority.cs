@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    class TaskPriority
+    public enum TaskPriority
     {
-    }
+        Lowest,
+        Low,
+        Medium,
+        High,
+        Highest
+    } 
 }

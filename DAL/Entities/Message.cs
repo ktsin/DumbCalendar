@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    internal class Message
+    public class Message
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
