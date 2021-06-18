@@ -6,7 +6,7 @@ using DAL.Repositories.Interfaces;
 
 namespace DAL.Repositories.EFCore
 {
-    public class ProjectTasksRepository : IRepository<ProjectTask>
+    public class ProjectTasksRepository : IProjectTasksRepository
     {
         public async Task<ProjectTask> Create(ProjectTask value)
         {

@@ -6,7 +6,7 @@ using DAL.Repositories.Interfaces;
 
 namespace DAL.Repositories.EFCore
 {
-    public class UsersRepository : IRepository<User>
+    public class UsersRepository : IUserRepository
     {
         public async Task<User> Create(User value)
         {

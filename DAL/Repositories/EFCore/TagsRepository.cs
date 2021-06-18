@@ -6,7 +6,7 @@ using DAL.Repositories.Interfaces;
 
 namespace DAL.Repositories.EFCore
 {
-    public class TagsRepository : IRepository<Tag>
+    public class TagsRepository :ITagsRepository
     {
         public async Task<Tag> Create(Tag value)
         {
