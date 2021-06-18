@@ -7,7 +7,7 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         
-        public int CommandOwner { get; set; }
+        public string CommandOwner { get; set; }
         
         public string CommandName { get; set; }
         

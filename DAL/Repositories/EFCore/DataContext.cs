@@ -49,16 +49,18 @@ namespace DAL.Repositories.EFCore
                 .WithMany()
                 .HasForeignKey(e => e.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<CalendarEvent>()
-                .HasMany<Tag>(e => e.Tags)
-                .WithMany(e => e.CalendarEvents);
+            // modelBuilder.Entity<CalendarEvent>()
+            //     .HasMany(e => e.Tags)
+            //     .WithMany(e => e.CalendarEvents)
+            //     .UsingEntity(e => e.ToTable("EventTag"));
             #endregion
 
             #region GroupsConfig
 
             modelBuilder.Entity<Group>()
                 .HasMany<User>(e => e.GroupParticipants)
-                .WithMany(e => e.Groups);
+                .WithMany(e => e.Groups)
+                .UsingEntity(e => e.ToTable("GroupUser"));
             modelBuilder.Entity<Group>()
                 .HasOne<User>()
                 .WithMany()
@@ -70,7 +72,8 @@ namespace DAL.Repositories.EFCore
 
             modelBuilder.Entity<Project>()
                 .HasMany(e => e.Participants)
-                .WithMany(e=>e.InProjects);
+                .WithMany(e=>e.InProjects)
+                .UsingEntity(e => e.ToTable("ProjectUser"));
             modelBuilder.Entity<Project>()
                 .HasOne<User>()
                 .WithMany(e => e.UserProjects)
@@ -87,10 +90,12 @@ namespace DAL.Repositories.EFCore
 
             modelBuilder.Entity<ProjectTask>()
                 .HasMany(e => e.Participants)
-                .WithMany(e => e.Tasks);
+                .WithMany(e => e.Tasks)
+                .UsingEntity(e => e.ToTable("ProjectTaskUser"));
             modelBuilder.Entity<ProjectTask>()
                 .HasMany(e => e.Tags)
-                .WithMany(e => e.ProjectTasks);
+                .WithMany(e => e.ProjectTasks)
+                .UsingEntity(e => e.ToTable("TagProjectTask"));
             modelBuilder.Entity<ProjectTask>()
                 .HasOne<Project>()
                 .WithMany(e => e.Tasks)
@@ -103,10 +108,12 @@ namespace DAL.Repositories.EFCore
 
             modelBuilder.Entity<Tag>()
                 .HasMany(e => e.ProjectTasks)
-                .WithMany(e => e.Tags);
+                .WithMany(e => e.Tags)
+                .UsingEntity(e => e.ToTable("ProjectTaskTag"));
             modelBuilder.Entity<Tag>()
-                .HasMany(e => e.ProjectTasks)
-                .WithMany(e => e.Tags);
+                .HasMany(e => e.CalendarEvents)
+                .WithMany(e => e.Tags)
+                .UsingEntity(e => e.ToTable("CalendarEventTag"));
             modelBuilder.Entity<Tag>()
                 .HasOne<User>()
                 .WithMany()
@@ -118,13 +125,16 @@ namespace DAL.Repositories.EFCore
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Groups)
-                .WithMany(e => e.GroupParticipants);
+                .WithMany(e => e.GroupParticipants)
+                .UsingEntity(e => e.ToTable("UserGroup"));
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Tasks)
-                .WithMany(e => e.Participants);
+                .WithMany(e => e.Participants)
+                .UsingEntity(e => e.ToTable("UserProjectTask"));
             modelBuilder.Entity<User>()
                 .HasMany(e => e.InProjects)
-                .WithMany(e => e.Participants);
+                .WithMany(e => e.Participants)
+                .UsingEntity(e => e.ToTable("UserProject"));
             modelBuilder.Entity<User>()
                 .HasMany(e => e.UserProjects)
                 .WithOne()

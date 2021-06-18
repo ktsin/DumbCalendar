@@ -8,13 +8,17 @@ namespace DAL
 {
     public static class Configure
     {
-        public static IServiceCollection ConfigureDAL(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureDal(this IServiceCollection services, IConfiguration configuration)
         {
             string conStr = configuration.GetConnectionString("MainData");
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                opt.UseSqlite(conStr);
+                opt.UseSqlite(conStr, e =>
+                {
+                    e.MigrationsAssembly("DumbCalendar");
+                    e.MigrationsHistoryTable("MigrationsHistory");
+                });
             });
             services.AddScoped<ICalendarEventsRepository, CalendarEventsRepository>();
             services.AddScoped<IGroupsRepository, GroupsRepository>();
