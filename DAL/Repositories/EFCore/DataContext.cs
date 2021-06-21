@@ -1,10 +1,5 @@
 ﻿using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repositories.EFCore
 {
@@ -14,24 +9,25 @@ namespace DAL.Repositories.EFCore
         {
             Database.EnsureCreated();
         }
-        
+
         public DbSet<CalendarEvent> CalendarEvents { get; set; }
-        
+
         public DbSet<Group> Groups { get; set; }
-        
+
         public DbSet<Message> Messages { get; set; }
-        
+
         public DbSet<Project> Projects { get; set; }
-        
+
         public DbSet<ProjectTask> ProjectTasks { get; set; }
-        
+
         public DbSet<Tag> Tags { get; set; }
 
         public DbSet<User> Users { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region MessaagesConfig
+
             modelBuilder.Entity<Message>()
                 .HasOne<User>()
                 .WithMany()
@@ -40,6 +36,7 @@ namespace DAL.Repositories.EFCore
                 .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.Recipient);
+
             #endregion
 
             #region CalendarEventsConfig
@@ -53,6 +50,7 @@ namespace DAL.Repositories.EFCore
             //     .HasMany(e => e.Tags)
             //     .WithMany(e => e.CalendarEvents)
             //     .UsingEntity(e => e.ToTable("EventTag"));
+
             #endregion
 
             #region GroupsConfig
@@ -72,7 +70,7 @@ namespace DAL.Repositories.EFCore
 
             modelBuilder.Entity<Project>()
                 .HasMany(e => e.Participants)
-                .WithMany(e=>e.InProjects)
+                .WithMany(e => e.InProjects)
                 .UsingEntity(e => e.ToTable("ProjectUser"));
             modelBuilder.Entity<Project>()
                 .HasOne<User>()

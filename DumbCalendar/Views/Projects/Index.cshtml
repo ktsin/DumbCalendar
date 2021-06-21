@@ -1,8 +1,30 @@
-﻿@model dynamic
+﻿@model BLL.DTO.UserDTO
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "User's projects";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<div class="flex-row justify-content-between">
+    <div class="h-100 bg-light rounded col-4 border">
+
+        <h4>Your projects:</h4>
+        @if (Model.UserProjects != null)
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var project in Model.UserProjects)
+                {
+                    <li class="list-group-item">
+                        <a data-ajax>
+                            @(project.Name) : @(project.ProjectStart.ToString("d")) &LongRightArrow; @(project.ProjectEnd.ToString("d"))
+                        </a>
+
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div class="h-100 bg-light rounded col-4 border" id="projectInfo">
+
+    </div>
+</div>

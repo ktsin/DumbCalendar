@@ -1,0 +1,25 @@
+﻿@model BLL.Calendar.CalendarDay
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Detailed day view: @(Model.Day.ToString("D"))</h2>
+
+<table class="table table-bordered">
+    <tbody>
+    @for (int i = 0; i < 24; i++)
+    {
+        <tr>
+            <td>
+                @(i.ToString("D2")):00
+            </td>
+            <td>
+                Your task:
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
