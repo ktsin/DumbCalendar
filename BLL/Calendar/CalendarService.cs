@@ -55,6 +55,7 @@ namespace BLL.Calendar
                         .ToList());
                 var projectTasks = await _projectTasks.GetBySelector(e => e.TaskStart <= day.Day
                                                                           && e.TaskEnd >= day.Day.AddDays(1)
+                                                                          && e.Participants != null
                                                                           && e.Participants.Contains(new User()
                                                                               {Id = userId as string}));
                 day.ProjectTasks = await Task.Run(() => projectTasks.Select(_mapper.Map<ProjectTaskDTO>).ToList());

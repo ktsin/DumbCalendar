@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -54,7 +55,7 @@ namespace DAL.Repositories.EFCore
             return await _context
                 .Projects
                 .Include(e => e.Participants)
-                .ThenInclude(e => e.Tasks)
+                .Include(e => e.Tasks)
                 .ToListAsync();
         }
 
@@ -62,7 +63,7 @@ namespace DAL.Repositories.EFCore
         {
             return await Task.Run(() => _context.Projects
                 .Include(e => e.Participants)
-                .ThenInclude(e => e.Tasks)
+                .Include(e => e.Tasks)
                 .Where(selector)
                 .ToList());
         }
@@ -71,8 +72,19 @@ namespace DAL.Repositories.EFCore
         {
             return await _context.Projects
                 .Include(e => e.Participants)
-                .ThenInclude(e => e.Tasks)
+                .Include(e => e.Tasks)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
+        }
+
+        public async Task<Project> AddUserToProject(int projectId, object uid)
+        {
+            SqliteParameter pId = new SqliteParameter("pId", projectId);
+            SqliteParameter uId = new SqliteParameter("uId", uid);
+            await _context.Database
+                .ExecuteSqlRawAsync(@"INSERT INTO UserProject (InProjectsId, ParticipantsId) VALUES (@pId, @uId)", pId,
+                    uId);
+            await _context.SaveChangesAsync();
+            return await _context.Projects.FirstOrDefaultAsync(e => e.Id == projectId);
         }
     }
 }

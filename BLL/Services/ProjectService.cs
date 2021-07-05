@@ -148,9 +148,10 @@ namespace BLL.Services
 
         public async Task<ProjectDTO> AddUserToProject(int projectId, object userId)
         {
-            var project = await _projects.GetById(projectId);
-            project.Participants.Add(await _userRepository.GetById(userId));
-            var nproject = await _projects.Update(project);
+            // var project = await _projects.GetById(projectId);
+            // project.Participants.Add(await _userRepository.GetById(userId));
+            // var nproject = await _projects.Update(project);
+            var nproject = await _projects.AddUserToProject(projectId, userId);
             return _mapper.Map<ProjectDTO>(nproject);
         }
     }

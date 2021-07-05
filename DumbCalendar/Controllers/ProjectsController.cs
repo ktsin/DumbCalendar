@@ -31,10 +31,10 @@ namespace DumbCalendar.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<ProjectDTO> projects =
-                await _projectService.GetUsersProjects(_userManager.GetUserId(User)) as List<ProjectDTO>;
-            projects = projects.Concat(await _projectService.UserOwnedProjects(_userManager.GetUserId(User))).ToList();
-            return View(projects);
+            var model = new ProjectsIndexViewModel();
+            model.UserOwn = await _projectService.GetUsersProjects(_userManager.GetUserId(User));
+            model.Participating = await _projectService.UserOwnedProjects(_userManager.GetUserId(User));
+            return View(model);
         }
 
         public async Task<IActionResult> ProjectInfo(int id)
@@ -59,11 +59,6 @@ namespace DumbCalendar.Controllers
                 .Select(e => new {Id = e.Id, FullName = e.FullName})
                 .ToList();
             ViewBag.SelectOpts = new MultiSelectList(options, "Id", "FullName");
-            // var categories = db.Categories.Select(c => new { 
-            //     CategoryID = c.CategoryID, 
-            //     CategoryName = c.CategoryName 
-            // }).ToList();
-            // ViewBag.Categories = new MultiSelectList(categories, "CategoryID", "CategoryName");
             return PartialView("_addToProject", new AddParticipantViewModel()
             {
                 AvailableUsers = list,
@@ -82,6 +77,37 @@ namespace DumbCalendar.Controllers
                 await _projectService.AddUserToProject(projectId, uid);
             }
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddProjectTask(int id)
+        {
+            var projects = await _projectService.UserOwnedProjects(_userManager.GetUserId(User));
+            ViewBag.ProjectId = new MultiSelectList(
+                projects.Select(e => new {Id = e.Id, Name = e.Name}),
+                "Id",
+                "Name"
+            );
+            return PartialView("_addProjectTask", new ProjectTaskDTO() {ProjectId = id});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProjectTask(ProjectTaskDTO task)
+        {
+            await _projectService.AddProjectTask(task);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult AddProject()
+        {
+            return PartialView("_addProject", new ProjectDTO() {ProjectOwner = _userManager.GetUserId(User)});
+        }
+
+        public async Task<IActionResult> AddProject(ProjectDTO project)
+        {
+            await _projectService.AddProject(project);
             return RedirectToAction("Index");
         }
     }

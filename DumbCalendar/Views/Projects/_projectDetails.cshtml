@@ -18,6 +18,13 @@
                     @(e?.TaskName) (@(e?.TaskStart.ToString("d"))&nbsp;-&nbsp;@(e?.TaskEnd.ToString("d"))))
                 </li>
             }
+            <li class="list-group-item">
+                <a href="#" class="btn btn-success w-100" data-bs-toggle="modal"
+                   data-bs-target="#staticBackdrop"
+                   onclick="loadModal('/Projects/AddProjectTask/@(Model.Id)')">
+                    Add project task
+                </a>
+            </li>
         </ul>
     </div>
 
