@@ -1,46 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.EFCore
 {
     public class UsersRepository : IUserRepository
     {
+        private readonly DataContext _context;
+        private readonly ILogger<UsersRepository> _logger;
+
+        public UsersRepository(ILogger<UsersRepository> logger, DataContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
         public async Task<User> Create(User value)
         {
-            throw new NotImplementedException();
+            var res = await _context.Users.AddAsync(value);
+            var saveRes = await _context.SaveChangesAsync();
+            return res?.Entity;
         }
 
         public async Task<User> Update(User value)
         {
-            throw new NotImplementedException();
+            var res = _context.Users.Update(value);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return res?.Entity;
         }
 
         public async Task<bool> Delete(object key)
         {
-            throw new NotImplementedException();
+            var res = _context.Users.Remove(GetById(key).Result);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return true;
         }
 
         public async Task<ICollection<User>> ReadAll()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
 
         public async Task<ICollection<User>> ReadAllInclude()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
 
         public async Task<ICollection<User>> GetBySelector(Func<User, bool> selector)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => _context.Users.Where(selector).ToList());
         }
 
         public async Task<User> GetById(object id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
     }
 }

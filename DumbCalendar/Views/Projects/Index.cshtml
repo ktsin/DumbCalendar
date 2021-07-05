@@ -1,30 +1,61 @@
-﻿@model BLL.DTO.UserDTO
+﻿@model ICollection<BLL.DTO.ProjectDTO>
 
 @{
     ViewBag.Title = "User's projects";
     Layout = "_Layout";
 }
 
-<div class="flex-row justify-content-between">
-    <div class="h-100 bg-light rounded col-4 border">
+<div class="row align-items-md-stretch py-4">
+    <div class="h-100 bg-light rounded col border m-2">
 
-        <h4>Your projects:</h4>
-        @if (Model.UserProjects != null)
-        {
-            <ul class="list-group list-group-flush">
-                @foreach (var project in Model.UserProjects)
-                {
-                    <li class="list-group-item">
-                        <a data-ajax>
-                            @(project.Name) : @(project.ProjectStart.ToString("d")) &LongRightArrow; @(project.ProjectEnd.ToString("d"))
-                        </a>
-
-                    </li>
-                }
-            </ul>
-        }
+        <h4 class="card-title p-1">Your projects:</h4>
+        <div class="card p-0 m-1">
+            @if (Model != null)
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var project in Model)
+                    {
+                        <li class="list-group-item">
+                            <a href="#" data-ajax="true" data-ajax-url="/Projects/ProjectInfo/@(project.Id)" data-ajax-update="#projectInfo">
+                                @(project.Name) : @(project.ProjectStart.ToString("d")) - @(project.ProjectEnd.ToString("d"))
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
     </div>
-    <div class="h-100 bg-light rounded col-4 border" id="projectInfo">
-
+    <div class="h-100 bg-light rounded col border p-0 m-2" id="projectInfo">
+        <div class="card m-5 p-2 alert-info">
+            <p class="card-text">
+                Click on project to view information!
+            </p>
+        </div>
     </div>
 </div>
+
+<div class="modal" tabindex="-1" id="staticBackdrop">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="modalLoading" style="display: none;">
+                <img src="~/img/loading.gif" height="100%" alt="loading_img">
+            </div>
+            <div class="modal-body p-0" id="modalBody">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" defer>
+    function loadModal(url){
+        fetch(url)
+          .then((response) => {
+                              return response.text();
+                          })
+                          .then((result) => {
+                              // var myModal = new bootstrap.Modal(document.getElementById('modal'), {});
+                              // myModal.toggle();
+                              document.getElementById('modalBody').innerHTML = result;
+                          });
+    }
+    </script>

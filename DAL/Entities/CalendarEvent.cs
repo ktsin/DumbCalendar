@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Entities
 {
-    public class CalendarEvent
+    public class CalendarEvent : IComparable<CalendarEvent>, IComparable
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,5 +20,21 @@ namespace DAL.Entities
         public string Comment { get; set; }
 
         public ICollection<Tag> Tags { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return 1;
+            if (ReferenceEquals(this, obj)) return 0;
+            return obj is CalendarEvent other
+                ? CompareTo(other)
+                : throw new ArgumentException($"Object must be of type {nameof(CalendarEvent)}");
+        }
+
+        public int CompareTo(CalendarEvent other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return string.Compare(Id, other.Id, StringComparison.Ordinal);
+        }
     }
 }

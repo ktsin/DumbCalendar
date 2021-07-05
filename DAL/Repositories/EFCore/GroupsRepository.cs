@@ -1,46 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.EFCore
 {
     public class GroupsRepository : IGroupsRepository
     {
+        private readonly DataContext _context;
+        private readonly ILogger<GroupsRepository> _logger;
+
+        public GroupsRepository(ILogger<GroupsRepository> logger, DataContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
         public async Task<Group> Create(Group value)
         {
-            throw new NotImplementedException();
+            var res = await _context.Groups.AddAsync(value);
+            var saveRes = await _context.SaveChangesAsync();
+            return res?.Entity;
         }
 
         public async Task<Group> Update(Group value)
         {
-            throw new NotImplementedException();
+            var res = _context.Groups.Update(value);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return res?.Entity;
         }
 
         public async Task<bool> Delete(object key)
         {
-            throw new NotImplementedException();
+            var res = _context.Groups.Remove(GetById(key).Result);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return true;
         }
 
         public async Task<ICollection<Group>> ReadAll()
         {
-            throw new NotImplementedException();
+            return await _context.Groups.ToListAsync();
         }
 
         public async Task<ICollection<Group>> ReadAllInclude()
         {
-            throw new NotImplementedException();
+            return await _context.Groups.Include(e => e.GroupParticipants).ToListAsync();
         }
 
         public async Task<ICollection<Group>> GetBySelector(Func<Group, bool> selector)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => _context
+                .Groups
+                .Include(e => e.GroupParticipants)
+                .Where(selector)
+                .ToList());
         }
 
         public async Task<Group> GetById(object id)
         {
-            throw new NotImplementedException();
+            return await _context.Groups.Include(e => e.GroupParticipants).FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
     }
 }

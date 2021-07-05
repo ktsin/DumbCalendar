@@ -29,13 +29,12 @@
             </a>
         </div>
     </div>
-
 </div>
 
 <div class="row align-items-md-stretch">
     <div class="col-md-4">
         <div class="h-100 card">
-            <h2 class="card-header">Your project tasks:</h2>
+            <h4 class="card-header">Your project tasks:</h4>
             <ul class="list-group list-group-flush">
 
                 @{
@@ -55,7 +54,7 @@
                 }
 
             </ul>
-            <h2 class="card-header">Your own schedule:</h2>
+            <h4 class="card-header">Your own schedule:</h4>
             <ul class="list-group list-group-flush">
                 @foreach (var day in Model?.CalendarDays)
                 {

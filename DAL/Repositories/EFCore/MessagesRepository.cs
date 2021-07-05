@@ -1,46 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.EFCore
 {
     public class MessagesRepository : IMessagesRepository
     {
-        public Task<Message> Create(Message value)
+        private readonly DataContext _context;
+        private readonly ILogger<MessagesRepository> _logger;
+
+        public MessagesRepository(ILogger<MessagesRepository> logger, DataContext context)
         {
-            throw new NotImplementedException();
+            _logger = logger;
+            _context = context;
         }
 
-        public Task<Message> Update(Message value)
+        public async Task<Message> Create(Message value)
         {
-            throw new NotImplementedException();
+            var res = await _context.Messages.AddAsync(value);
+            var saveRes = await _context.SaveChangesAsync();
+            return res?.Entity;
         }
 
-        public Task<bool> Delete(object key)
+        public async Task<Message> Update(Message value)
         {
-            throw new NotImplementedException();
+            var res = _context.Messages.Update(value);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return res?.Entity;
         }
 
-        public Task<ICollection<Message>> ReadAll()
+        public async Task<bool> Delete(object key)
         {
-            throw new NotImplementedException();
+            var res = _context.Messages.Remove(GetById(key).Result);
+            var saveRes = await _context.SaveChangesAsync();
+            _logger.LogDebug(new EventId(1212), res?.DebugView?.LongView);
+            return true;
         }
 
-        public Task<ICollection<Message>> ReadAllInclude()
+        public async Task<ICollection<Message>> ReadAll()
         {
-            throw new NotImplementedException();
+            return await _context.Messages.ToListAsync();
         }
 
-        public Task<ICollection<Message>> GetBySelector(Func<Message, bool> selector)
+        public async Task<ICollection<Message>> ReadAllInclude()
         {
-            throw new NotImplementedException();
+            return await _context.Messages.ToListAsync();
         }
 
-        public Task<Message> GetById(object id)
+        public async Task<ICollection<Message>> GetBySelector(Func<Message, bool> selector)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => _context.Messages.Where(selector).ToList());
+        }
+
+        public async Task<Message> GetById(object id)
+        {
+            return await _context.Messages.FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
     }
 }

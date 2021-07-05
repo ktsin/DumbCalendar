@@ -9,7 +9,7 @@ using DAL.Repositories.Interfaces;
 
 namespace BLL.Calendar
 {
-    public class CalendarService
+    public class CalendarService : ICalendarService
     {
         private readonly ICalendarEventsRepository _calendarEvents;
         private readonly IMapper _mapper;

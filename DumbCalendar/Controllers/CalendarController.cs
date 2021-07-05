@@ -11,10 +11,10 @@ namespace DumbCalendar.Controllers
     [Authorize]
     public class CalendarController : Controller
     {
-        private readonly CalendarService _calendarService;
+        private readonly ICalendarService _calendarService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CalendarController(CalendarService calendarService,
+        public CalendarController(ICalendarService calendarService,
             UserManager<IdentityUser> userManager)
         {
             _calendarService = calendarService;
