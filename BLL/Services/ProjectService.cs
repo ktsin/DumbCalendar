@@ -46,6 +46,12 @@ namespace BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
+        public async Task<ProjectTaskDTO> GetTaskById(int taskId)
+        {
+            var task = await _projectTasks.GetById(taskId);
+            return _mapper.Map<ProjectTaskDTO>(task);
+        }
+
         public async Task<ProjectDTO> AddProject(ProjectDTO project)
         {
             try
@@ -134,23 +140,17 @@ namespace BLL.Services
                 _logger.LogError(ex, "Exception in UpdateProjectTask(ProjectTaskDTO project)");
                 res = false;
             }
-
             return res;
         }
 
         public async Task<ProjectTaskDTO> AddUserToProjectTask(int taskId, object userId)
         {
-            var task = await _projectTasks.GetById(taskId);
-            task.Participants.Add(await _userRepository.GetById(userId));
-            var ntask = await _projectTasks.Update(task);
-            return _mapper.Map<ProjectTaskDTO>(ntask);
+            var task = await _projectTasks.AddUserToTask(taskId, userId);
+            return _mapper.Map<ProjectTaskDTO>(task);
         }
 
         public async Task<ProjectDTO> AddUserToProject(int projectId, object userId)
         {
-            // var project = await _projects.GetById(projectId);
-            // project.Participants.Add(await _userRepository.GetById(userId));
-            // var nproject = await _projects.Update(project);
             var nproject = await _projects.AddUserToProject(projectId, userId);
             return _mapper.Map<ProjectDTO>(nproject);
         }

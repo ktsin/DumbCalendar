@@ -17,8 +17,10 @@ namespace DAL.Entities
 
         public string Name { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
         public DateTime ProjectStart { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
         public DateTime ProjectEnd { get; set; }
 
         public int CompareTo(object obj)

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace DAL.Repositories.EFCore
 {
@@ -62,6 +65,27 @@ namespace DAL.Repositories.EFCore
         public async Task<ProjectTask> GetById(object id)
         {
             return await _context.ProjectTasks.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        }
+
+        public async Task<ProjectTask> AddUserToTask(int taskId, object uid)
+        {
+            SqliteParameter tId = new SqliteParameter("tId", taskId);
+            SqliteParameter uId = new SqliteParameter("uId", uid);
+            await _context.Database
+                .ExecuteSqlRawAsync(@"INSERT INTO UserProjectTask (ParticipantsId, TasksId) VALUES (@tId, @uId)",
+                    tId, uId);
+            await _context.SaveChangesAsync();
+            return await _context.ProjectTasks.FirstOrDefaultAsync(e => e.Id == taskId);
+        }
+        
+        public async Task<ICollection<ProjectTask>> GetTasksByUserParticipating(object uid)
+        {
+            NpgsqlParameter uId = new NpgsqlParameter("uId", uid);
+            var tasks = _context.ProjectTasks.FromSqlRaw(
+                "SELECT * FROM ProjectTasks WHERE ProjectTasks.Id == (SELECT TaskId FROM UserProjectTask WHERE UserProjectTask.ParticipantsId == @uId)")
+                .ToList();
+            return tasks;
+            
         }
     }
 }

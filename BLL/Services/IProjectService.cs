@@ -9,6 +9,7 @@ namespace BLL.Services
         Task<ICollection<ProjectDTO>> GetUsersProjects(object uid);
         Task<ICollection<ProjectDTO>> UserOwnedProjects(object uid);
         Task<ProjectDTO> GetProjectById(int projectId);
+        Task<ProjectTaskDTO> GetTaskById(int taskId);
         Task<ProjectDTO> AddProject(ProjectDTO project);
         Task<ProjectDTO> UpdateProject(ProjectDTO project);
         Task<bool> RemoveProject(int projectId);

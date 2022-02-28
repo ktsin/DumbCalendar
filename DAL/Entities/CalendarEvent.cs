@@ -13,8 +13,10 @@ namespace DAL.Entities
 
         public string OwnerId { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
         public DateTime EventDate { get; set; }
-
+        
+        [Column(TypeName = "varchar(50)")]
         public TimeSpan Duration { get; set; }
 
         public string Comment { get; set; }

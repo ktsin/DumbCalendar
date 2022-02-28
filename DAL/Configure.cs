@@ -10,11 +10,17 @@ namespace DAL
     {
         public static IServiceCollection ConfigureDal(this IServiceCollection services, IConfiguration configuration)
         {
-            string conStr = configuration.GetConnectionString("MainData");
+            //string conStr = configuration.GetConnectionString("MainData");
+            string conStr = configuration.GetConnectionString("PMainData");
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                opt.UseSqlite(conStr, e =>
+                // opt.UseSqlite(conStr, e =>
+                // {
+                //     e.MigrationsAssembly("DumbCalendar");
+                //     e.MigrationsHistoryTable("MigrationsHistory");
+                // });
+                opt.UseNpgsql(conStr, e =>
                 {
                     e.MigrationsAssembly("DumbCalendar");
                     e.MigrationsHistoryTable("MigrationsHistory");
